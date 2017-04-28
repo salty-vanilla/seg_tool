@@ -2,6 +2,8 @@ var oldX = 0;
 var oldY = 0;
 var drawFlag = false;
 var brushSize = 1;
+var brushSizeMin = 1;
+var brushSizeMax = 100;
 var colorList = {
     "black"   : "rgba(0,0,0,1)",
     "blue"    : "rgba(0,0,255,1)",
@@ -22,22 +24,28 @@ window.addEventListener("load", function(){
         oldX = e.clientX - rect.left;
         oldY = e.clientY - rect.top;
     }, true);
-    can.addEventListener("mouseup", function(){
+    can.addEventListener("mouseup", function(){   
         drawFlag = false;
     }, true);
-    // カラーパレット初期化
-    $("#colorPalet div").click(function(e){
-        penColor = colorList[this.id];
-    });
-    // ブラシサイズの設定を行うスライダー
-    $("#slider").slider({
-        min: 0,
-        max: 100, // ブラシの最大サイズ
-        value : 1,  // 最初のブラシサイズ
-        slide : function(evt, ui){
-            brushSize = ui.value; // ブラシサイズを設定
+	// ------------------------------------------------------------
+	// ホイールを操作すると実行されるイベント
+	// ------------------------------------------------------------
+	document.addEventListener("mousewheel" , function (e){
+		brushSize -= e.deltaY / 100;
+        console.log(brushSize)
+        if(brushSize < brushSizeMin){
+            brushSize = brushSizeMin;
+        } 
+        else if(brushSize > brushSizeMax){
+            brushSize = brushSizeMax;
         }
-    });
+	});
+    // コンテキストメニューを表示するイベント時のコールバック
+    can.addEventListener("contextmenu", function(e){
+        // デフォルトイベントをキャンセル
+        // これを書くことでコンテキストメニューが表示されなくなります
+        e.preventDefault();
+    }, false);
 }, true);
 // 描画処理
 function draw(e){
@@ -78,14 +86,4 @@ function init() {
     img.onload = function() {
       bgContext.drawImage(img, 0, 0);
     }
-
-    // キャンバスを取り出す
-    var fgCanvas = document.getElementById('fgCanvas');
-    // 2Dのコンテキストを取り出す
-    var fgContext = fgCanvas.getContext('2d');
-    // 指定の色で範囲内を塗りつぶす
-    fgContext.fillStyle = "rgba(0, 0, 0, 0)";
-    fgContext.fillRect(0, 0, 640, 480);
-    fgCanvas.opacity = 0.5;
-    // fgContext.globalCompositeOperation = 'source-out';
 }
