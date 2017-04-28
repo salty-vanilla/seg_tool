@@ -1,0 +1,27 @@
+BODY {
+color: #444455;
+font-size: 11pt;
+background-color: #f0f0f0;
+}
+
+#canvas {
+    position: relative;
+    width: 640px;
+    height: 480px;
+    margin: 0 auto;
+    border: 1px black solid;
+}
+
+#bgCanvas {
+    position:absolute;
+    z-index: 1;
+    left: 0px;
+    top: 0px;
+}
+
+#fgCanvas {
+    position:absolute;
+    z-index: 2;
+    left: 0px;
+    top: 0px;
+}
